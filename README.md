@@ -1,4 +1,3 @@
-```markdown
 # 🔐 IAM Lab com Keycloak + FastAPI (RBAC)
 
 Projeto de laboratório para demonstrar **controle de acesso baseado em papéis (RBAC)** usando **Keycloak 24**, **FastAPI** e **Docker Compose**.  
