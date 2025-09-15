@@ -15,6 +15,7 @@ Inclui autenticação via Keycloak, API protegida com JWT, e testes automatizado
 ---
 
 ## ⚙️ Estrutura do Projeto
+```bash
 keycloak-lab/
 ├── docs/              # prints ou diagramas (opcional)
 ├── keycloak/          # configs relacionadas ao Keycloak
