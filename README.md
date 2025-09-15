@@ -17,7 +17,7 @@ Inclui autenticação via Keycloak, API protegida com JWT, e testes automatizado
 ## ⚙️ Estrutura do Projeto
 ```bash
 keycloak-lab/
-├── docs/              # prints ou diagramas (opcional)
+├── docs/              # prints ou diagramas 
 ├── keycloak/          # configs relacionadas ao Keycloak
 ├── postman/           # coleção de testes (JSON)
 ├── service-a/         # API FastAPI (service-a)
