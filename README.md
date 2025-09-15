@@ -1,3 +1,4 @@
+```markdown
 # 🔐 IAM Lab com Keycloak + FastAPI (RBAC)
 
 Projeto de laboratório para demonstrar **controle de acesso baseado em papéis (RBAC)** usando **Keycloak 24**, **FastAPI** e **Docker Compose**.  
@@ -17,7 +18,7 @@ Inclui autenticação via Keycloak, API protegida com JWT, e testes automatizado
 ## ⚙️ Estrutura do Projeto
 ```bash
 keycloak-lab/
-├── docs/              # prints ou diagramas 
+├── docs/              # prints ou diagramas
 ├── keycloak/          # configs relacionadas ao Keycloak
 ├── postman/           # coleção de testes (JSON)
 ├── service-a/         # API FastAPI (service-a)
@@ -79,6 +80,30 @@ carol   | viewer  | 403      | 403
 
 ---
 
+## 📷 Demonstração
+
+### Rotas no Swagger
+![Swagger Docs](docs/swagger_routes.png)
+
+### Teste de RBAC no Postman
+- Alice (admin) acessando `/reports` → **200 OK**  
+![Postman Alice](docs/postman_reports_alice.png)
+
+- Carol (viewer) acessando `/reports` → **403 Forbidden**  
+![Postman Carol](docs/postman_reports_carol.png)
+
+### Roles e Usuários no Keycloak
+- Roles configuradas no Realm `lab-iam`  
+![Keycloak Roles](docs/keycloak_roles.png)
+
+- Usuários e suas permissões  
+![Keycloak Users](docs/keycloak_users.png)
+
+### Containers rodando com Docker
+![Docker ps](docs/docker_ps.png)
+
+---
+
 ## 📌 Próximos Passos (Ideias de evolução)
 - Adicionar refresh token.  
 - Configurar Client Roles no lugar de Realm Roles.  
@@ -88,4 +113,4 @@ carol   | viewer  | 403      | 403
 ---
 
 ## 👨‍💻 Autor
-Luciendel Alves | Estudante de Cibersegurança  
+Luciendel Alves | Estudante de Cibersegurança
