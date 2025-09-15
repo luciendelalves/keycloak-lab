@@ -24,7 +24,7 @@ keycloak-lab/
 ├── docker-compose.yml # sobe Keycloak + Postgres
 ├── .gitignore
 └── README.md
-
+```
 ---
 
 ## 🛠️ Setup
