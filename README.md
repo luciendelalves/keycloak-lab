@@ -111,5 +111,72 @@ carol   | viewer  | 403      | 403
 
 ---
 
+## ▶️ Como rodar este projeto localmente
+
+### Pré-requisitos
+- Docker Desktop (ou Docker + Compose)
+- Python 3.11+ (para rodar a API)
+- Postman (para testar os fluxos)
+
+### 1) Clonar o repositório
+git clone https://github.com/luciendelalves/keycloak-lab.git
+cd keycloak-lab
+
+### 2) Subir Keycloak + Postgres (Docker)
+docker-compose up -d
+- Console do Keycloak: http://localhost:8080  
+  Login inicial: admin / admin
+
+### 3) Criar Realm, Roles, Users e Client no Keycloak
+- Realm: lab-iam
+- Roles (realm): admin, analyst, viewer
+- Users:
+  - alice / Senha!123 → role admin
+  - bruno / Senha!123 → role analyst
+  - carol / Senha!123 → role viewer
+- Client: lab-api (public)
+  - Direct Access Grants: ON
+- Issuer (conferir): http://localhost:8080/realms/lab-iam
+
+### 4) Rodar a API (FastAPI)
+cd service-a
+python -m venv .venv
+# Windows:
+. .venv/Scripts/activate
+# Linux/Mac:
+# source .venv/bin/activate
+pip install -r requirements.txt
+uvicorn main:app --reload
+- Swagger: http://127.0.0.1:8000/docs
+
+### 5) Testar com Postman
+1. Importar postman/lab-iam.postman_collection.json.
+2. Em Variables da Collection, confira:
+   - base_url = http://127.0.0.1:8000
+   - keycloak_base = http://localhost:8080
+   - realm = lab-iam
+   - client_id = lab-api
+3. Executar:
+   - POST token — alice/bruno/carol (salvam token_* na Collection).
+   - GET /reports (alice) → 200 OK
+   - GET /reports (carol) → 403 Forbidden
+   - GET /admin (alice) → 200 OK
+   - GET /admin (bruno/carol) → 403 Forbidden
+
+### ✅ Resultado esperado (RBAC)
+Usuário | Role    | /reports | /admin
+--------|---------|----------|-------
+alice   | admin   | 200      | 200
+bruno   | analyst | 200      | 403
+carol   | viewer  | 403      | 403
+
+### 🔧 Troubleshooting rápido
+- 401 invalid_token / expired: gere novamente o token no Postman (requests de token).
+- 403 indevido: confira se a API lê realm_access.roles (não resource_access) e se as roles estão corretas no usuário.
+- JWKS/issuer: em service-a/auth.py, o ISSUER deve ser http://localhost:8080/realms/lab-iam.
+- Portas ocupadas: libere 8080 (Keycloak) e 5432 (Postgres) ou ajuste no docker-compose.yml.
+
+---
+
 ## 👨‍💻 Autor
 Luciendel Alves | Estudante de Cibersegurança
