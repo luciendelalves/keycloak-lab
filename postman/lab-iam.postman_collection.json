@@ -1,1 +1,259 @@
-{}
+{
+  "info": {
+    "name": "lab-iam",
+    "_postman_id": "e7c0b2a1-0000-4c00-9000-aaaaaaaaaaaa",
+    "description": "Collection para testar RBAC com Keycloak + FastAPI",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "POST token — alice",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/x-www-form-urlencoded" }
+        ],
+        "url": { "raw": "{{token_url}}", "host": ["{{token_url}}"] },
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            { "key": "grant_type", "value": "password" },
+            { "key": "client_id", "value": "{{client_id}}" },
+            { "key": "username", "value": "{{alice_user}}" },
+            { "key": "password", "value": "{{alice_pass}}" }
+          ]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Salva token_alice', function() {",
+              "  var json = pm.response.json();",
+              "  pm.collectionVariables.set('token_alice', json.access_token);",
+              "  pm.expect(pm.collectionVariables.get('token_alice')).to.be.a('string').and.not.empty;",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "POST token — bruno",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/x-www-form-urlencoded" }
+        ],
+        "url": { "raw": "{{token_url}}", "host": ["{{token_url}}"] },
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            { "key": "grant_type", "value": "password" },
+            { "key": "client_id", "value": "{{client_id}}" },
+            { "key": "username", "value": "{{bruno_user}}" },
+            { "key": "password", "value": "{{bruno_pass}}" }
+          ]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Salva token_bruno', function() {",
+              "  var json = pm.response.json();",
+              "  pm.collectionVariables.set('token_bruno', json.access_token);",
+              "  pm.expect(pm.collectionVariables.get('token_bruno')).to.be.a('string').and.not.empty;",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "POST token — carol",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/x-www-form-urlencoded" }
+        ],
+        "url": { "raw": "{{token_url}}", "host": ["{{token_url}}"] },
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            { "key": "grant_type", "value": "password" },
+            { "key": "client_id", "value": "{{client_id}}" },
+            { "key": "username", "value": "{{carol_user}}" },
+            { "key": "password", "value": "{{carol_pass}}" }
+          ]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Salva token_carol', function() {",
+              "  var json = pm.response.json();",
+              "  pm.collectionVariables.set('token_carol', json.access_token);",
+              "  pm.expect(pm.collectionVariables.get('token_carol')).to.be.a('string').and.not.empty;",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "GET /health",
+      "request": {
+        "method": "GET",
+        "url": { "raw": "{{base_url}}/health", "host": ["{{base_url}}"], "path": ["health"] }
+      }
+    },
+    {
+      "name": "GET /reports (alice)",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token_alice}}" }],
+        "url": { "raw": "{{base_url}}/reports", "host": ["{{base_url}}"], "path": ["reports"] }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('200 /reports (alice)', function(){ pm.response.to.have.status(200); });",
+              "pm.test('JSON body', function(){ pm.response.to.be.json; });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "GET /reports (bruno)",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token_bruno}}" }],
+        "url": { "raw": "{{base_url}}/reports", "host": ["{{base_url}}"], "path": ["reports"] }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('200 /reports (bruno)', function(){ pm.response.to.have.status(200); });",
+              "pm.test('JSON body', function(){ pm.response.to.be.json; });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "GET /reports (carol)",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token_carol}}" }],
+        "url": { "raw": "{{base_url}}/reports", "host": ["{{base_url}}"], "path": ["reports"] }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('403 /reports (carol)', function(){ pm.response.to.have.status(403); });",
+              "pm.test('JSON body', function(){ pm.response.to.be.withBody; pm.response.to.be.json; });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "GET /admin (alice)",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token_alice}}" }],
+        "url": { "raw": "{{base_url}}/admin", "host": ["{{base_url}}"], "path": ["admin"] }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('200 /admin (alice)', function(){ pm.response.to.have.status(200); });",
+              "pm.test('JSON body', function(){ pm.response.to.be.json; });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "GET /admin (bruno)",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token_bruno}}" }],
+        "url": { "raw": "{{base_url}}/admin", "host": ["{{base_url}}"], "path": ["admin"] }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('403 /admin (bruno)', function(){ pm.response.to.have.status(403); });",
+              "pm.test('JSON body', function(){ pm.response.to.be.withBody; pm.response.to.be.json; });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "GET /admin (carol)",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token_carol}}" }],
+        "url": { "raw": "{{base_url}}/admin", "host": ["{{base_url}}"], "path": ["admin"] }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('403 /admin (carol)', function(){ pm.response.to.have.status(403); });",
+              "pm.test('JSON body', function(){ pm.response.to.be.withBody; pm.response.to.be.json; });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    { "key": "base_url", "value": "http://127.0.0.1:8000" },
+    { "key": "keycloak_base", "value": "http://localhost:8080" },
+    { "key": "realm", "value": "lab-iam" },
+    { "key": "client_id", "value": "lab-api" },
+    { "key": "token_url", "value": "{{keycloak_base}}/realms/{{realm}}/protocol/openid-connect/token" },
+    { "key": "alice_user", "value": "alice" },
+    { "key": "alice_pass", "value": "Senha!123" },
+    { "key": "bruno_user", "value": "bruno" },
+    { "key": "bruno_pass", "value": "Senha!123" },
+    { "key": "carol_user", "value": "carol" },
+    { "key": "carol_pass", "value": "Senha!123" },
+    { "key": "token_alice", "value": "" },
+    { "key": "token_bruno", "value": "" },
+    { "key": "token_carol", "value": "" }
+  ]
+}
+
